@@ -23,6 +23,18 @@ function on_calc_button_click() {
 
     //表初期化
     while (tbl.rows.length > 0) tbl.deleteRow(0);
+    let row_1 = document.createElement("tr");
+    let heading_1 = document.createElement("th");
+    heading_1.innerHTML = "Command Name";
+    let heading_2 = document.createElement("th");
+    heading_2.innerHTML = "Blood Gain";
+    let heading_3 = document.createElement("th");
+    heading_3.innerHTML = "Number of Times";
+
+    row_1.appendChild(heading_1);
+    row_1.appendChild(heading_2);
+    row_1.appendChild(heading_3);
+    tbl_body.appendChild(row_1);
 
     var net_value = 0;
     var f_s, f_ss, f_sss;
@@ -35,28 +47,22 @@ function on_calc_button_click() {
         var target_str = String(command_name_array[i])
         var count = (str.match(new RegExp(target_str, "g")) || []).length;
 
-        switch (target_str) {
+        switch (String(target_str)) {
             case "f.S":
-                f_s = count;
+                count = count - f_ss;
                 break;
             case "f.SS":
                 f_ss = count;
+                count = count - f_sss;
                 break;
             case "f.SSS":
                 f_sss = count;
                 break;
-            default:
-                if (count > 0) {
-                    console.log(target_str + ": " + count);
-                }
-                net_value += Number(results[target_str]) * count;
-                break;
         }
+        net_value += Number(results[target_str]) * count;
 
         if (count > 0) {
             for (let j = 0; j < 3; j++) {
-                // <td> 要素とテキストノードを作成し、テキストノードを
-                // <td> の内容として、その <td> を表の行の末尾に追加
                 const cell = document.createElement("td");
                 let cellText;
                 switch (j) {
@@ -64,10 +70,10 @@ function on_calc_button_click() {
                         cellText = document.createTextNode(target_str);
                         break;
                     case 1:
-                        cellText = document.createTextNode(count);
+                        cellText = document.createTextNode(results[target_str]);
                         break;
                     case 2:
-                        cellText = document.createTextNode(results[target_str]);
+                        cellText = document.createTextNode(count);
                         break;
                 }
 
@@ -78,16 +84,7 @@ function on_calc_button_click() {
             // 表の本体の末尾に行を追加
             tbl_body.appendChild(row);
         }
-
     }
-    f_s = f_s - f_ss - f_sss;
-    f_ss = f_ss - f_sss;
-
-    if (f_s > 0) console.log("f.S: " + f_s);
-    if (f_ss > 0) console.log("f.SS: " + f_ss);
-    if (f_sss > 0) console.log("f.SSS: " + f_sss);
-
-    net_value += Number(results["f.S"]) * f_s + Number(results["f.SS"]) * f_ss + Number(results["f.SSS"]) * f_sss;
 
     net_blood_gain = document.getElementById("net");
     net_blood_gain.innerHTML = net_value;
