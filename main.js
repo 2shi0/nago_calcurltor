@@ -25,30 +25,31 @@ function on_calc_button_click() {
         var target_str = String(command_name_array[i])
         var count = (str.match(new RegExp(target_str, "g")) || []).length;
 
-        //f.S処理
         switch (target_str) {
             case "f.S":
-                console.log("f.S:"+count);
                 f_s = count;
                 break;
             case "f.SS":
-                console.log("f.SS:"+count);
                 f_ss = count;
                 break;
             case "f.SSS":
-                console.log("f.SS:"+count);
                 f_sss = count;
                 break;
             default:
-                net_value += Number(results[target_str]) * count;
                 if (count > 0) {
                     console.log(target_str + ": " + count);
                 }
+                net_value += Number(results[target_str]) * count;
                 break;
         }
+
     }
     f_s = f_s - f_ss - f_sss;
     f_ss = f_ss - f_sss;
+
+    if (f_s > 0) console.log("f.S: " + f_s);
+    if (f_ss > 0) console.log("f.SS: " + f_ss);
+    if (f_sss > 0) console.log("f.SSS: " + f_sss);
 
     net_value += Number(results["f.S"]) * f_s + Number(results["f.SS"]) * f_ss + Number(results["f.SSS"]) * f_sss;
 
